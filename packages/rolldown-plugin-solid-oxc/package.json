@@ -1,7 +1,7 @@
 {
-  "name": "rolldown-plugin-solid-oxc",
+  "name": "@wq2/rolldown-plugin-solid-oxc",
   "version": "0.1.0-alpha.15",
-  "description": "Rolldown plugin for SolidJS using OXC-based compiler",
+  "description": "Rolldown plugin for SolidJS using OXC-based compiler (now working on everything except M*cOS)",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",

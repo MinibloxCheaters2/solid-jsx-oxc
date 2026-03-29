@@ -1,7 +1,7 @@
 {
-  "name": "bun-plugin-solid-oxc",
+  "name": "@wq2/bun-plugin-solid-oxc",
   "version": "0.1.0-alpha.15",
-  "description": "Bun plugin for SolidJS using OXC-based compiler",
+  "description": "Bun plugin for SolidJS using OXC-based compiler (now working on everything except M*cOS)",
   "type": "module",
   "main": "src/index.ts",
   "module": "src/index.ts",
@@ -33,10 +33,10 @@
   "author": "SolidJS Contributors",
   "license": "MIT",
   "peerDependencies": {
-    "solid-jsx-oxc": ">=0.1.0"
+    "@wq2/solid-jsx-oxc": ">=0.1.0"
   },
   "devDependencies": {
-    "solid-jsx-oxc": "workspace:*",
+    "@wq2/solid-jsx-oxc": "workspace:*",
     "@types/bun": "latest",
     "typescript": "^5.0.0"
   }

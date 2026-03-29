@@ -1,103 +1,16 @@
 # solid-jsx-oxc
 
+> [!IMPORTANT]
+> M\*cOS users are garbage, change my mind.
+> Whoever made this without doing cross compilation so more than M\*cOS was supported should be publicly executed.
+
 A high-performance JSX compiler for SolidJS built with [OXC](https://oxc.rs/) and Rust.
 
 ## Features
 
-- **Fast** - Built on OXC's Rust-based parser and transformer
-- **Comprehensive** - Covers most SolidJS JSX patterns for DOM + SSR builds
-- **Native** - NAPI-RS bindings for seamless Node.js integration
-- **Compatible** - Aims to be a drop-in replacement for `babel-plugin-jsx-dom-expressions` in common setups (see `packages/solid-jsx-oxc/TODO.md` for gaps/deferrals)
-
-## Installation
-
-```bash
-npm install solid-jsx-oxc
-# or
-bun add solid-jsx-oxc
-# or
-pnpm add solid-jsx-oxc
-```
-
-## Usage
-
-### With Vite
-
-```bash
-npm install vite-plugin-solid-oxc
-```
-
-```js
-// vite.config.js
-import { defineConfig } from 'vite';
-import solidOxc from 'vite-plugin-solid-oxc';
-
-export default defineConfig({
-  plugins: [solidOxc()],
-});
-```
-
-#### SolidStart / TanStack Start / deps that ship JSX
-
-By default, `vite-plugin-solid-oxc` excludes `node_modules` for performance. Some Solid ecosystem packages ship `.jsx/.tsx` in `node_modules` (common in SSR frameworks and routers), so those dependencies must be transformed too.
-
-If you see JSX parse errors coming from a dependency, allowlist the packages that ship JSX/TSX:
-
-```js
-// vite.config.js
-import { defineConfig } from 'vite';
-import solidOxc from 'vite-plugin-solid-oxc';
-
-export default defineConfig({
-  plugins: [
-    solidOxc({
-      // Keep most of node_modules excluded, but compile these packages.
-      exclude: [
-        /node_modules\/(?!(?:@solidjs\/[^/]*|@tanstack\/solid-start|@tanstack\/solid-router[^/]*|lucide-solid)\/)/,
-      ],
-      // For SSR frameworks that hydrate on the client, you likely also want:
-      // hydratable: true,
-    }),
-  ],
-});
-```
-
-To compile *all* dependencies (closer to `vite-plugin-solid` behavior), use `exclude: []`.
-
-### With Rolldown
-
-```bash
-npm install rolldown-plugin-solid-oxc
-```
-
-```js
-// rolldown.config.js
-import solidOxc from 'rolldown-plugin-solid-oxc';
-
-export default {
-  plugins: [solidOxc()],
-};
-```
-
-### Direct API Usage
-
-```js
-import { transform } from 'solid-jsx-oxc';
-
-const result = transform(code, {
-  generate: 'dom', // 'dom' | 'ssr' | 'universal' (currently aliases 'dom')
-  filename: 'input.jsx',
-  moduleName: 'solid-js/web',
-  builtIns: ['For', 'Show', 'Switch', 'Match', 'Suspense', 'SuspenseList', 'ErrorBoundary', 'Portal', 'Index', 'Dynamic'],
-  delegateEvents: true,
-  wrapConditionals: true,
-  contextToCustomElements: true,
-  hydratable: false,
-  sourceMap: false,
-});
-
-console.log(result.code);
-```
+- [x] Works on everything but M*cOS (die)
+- [x] Everything else from upstream
+- [x] upstream devs wrote this with ChatGPT (expect bugs if true)
 
 ## Supported Features
 
@@ -115,7 +28,7 @@ console.log(result.code);
 | Refs (variable & callback) | ✅ |
 | Spread props | ✅ |
 | Built-in components (`For`, `Show`, etc.) | ✅ |
-| Directives (`use:`) | ✅ (DOM) / ⚠️ (SSR skipped) |
+| Directives (`use:`) | ✅ (DOM) / ⚠️ (SSR skipped) (I don't care about SSR) |
 | SVG elements | ✅ |
 | Fragments | ✅ |
 | SSR mode | ✅ |
@@ -134,17 +47,7 @@ console.log(result.code);
 
 ## Examples
 
-| Example | Description |
-|---------|-------------|
-| [test-solid-vite7](./examples/test-solid-vite7) | Basic Vite + SolidJS app |
-| [tanstack-start-solid](./examples/tanstack-start-solid) | TanStack Start with SSR |
-
-```bash
-# Run an example
-cd examples/tanstack-start-solid
-bun install
-bun run dev
-```
+Just use an example as you would, but replacing references to the packages from here with the one from the `@wq2` group.
 
 ## Development
 

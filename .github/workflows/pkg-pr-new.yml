@@ -48,7 +48,7 @@ jobs:
           tool: cargo-zigbuild,cargo-xwin
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - uses: oven-sh/setup-bun@v2
       - name: Install deps
         run: bun install --ignore-scripts

@@ -1,7 +1,7 @@
 {
-  "name": "vite-plugin-solid-oxc",
+  "name": "@wq2/vite-plugin-solid-oxc",
   "version": "0.1.0-alpha.15",
-  "description": "Vite plugin for SolidJS using OXC-based compiler",
+  "description": "Vite plugin for SolidJS using OXC-based compiler (now working on everything except M*cOS)",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -31,7 +31,7 @@
   "author": "SolidJS Contributors",
   "license": "MIT",
   "peerDependencies": {
-    "solid-jsx-oxc": "*",
+    "@wq2/solid-jsx-oxc": "*",
     "vite": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "devDependencies": {
