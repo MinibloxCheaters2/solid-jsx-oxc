@@ -1,10 +1,15 @@
 {
   "name": "@wq2/solid-jsx-oxc",
   "version": "0.1.0-alpha.15",
-  "description": "OXC-based JSX compiler for SolidJS (now working on everything except M*cOS)",
+  "description": "OXC-based JSX compiler for SolidJS",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "exports": {
     ".": {
       "types": "./index.d.ts",
