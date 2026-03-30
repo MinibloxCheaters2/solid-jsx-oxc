@@ -2,7 +2,7 @@
   "name": "@wq2/solid-jsx-oxc-monorepo",
   "description": "High-performance OXC-based JSX compiler for SolidJS (supports more than m*cOS)",
   "version": "0.36.0",
-  "author": "Ryan Carniato",
+  "author": "Seized and Desisted",
   "license": "MIT",
   "repository": {
     "type": "git",
