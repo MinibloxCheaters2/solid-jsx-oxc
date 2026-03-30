@@ -5,7 +5,7 @@
  *
  * Usage with Bun.build():
  * ```ts
- * import solidPlugin from 'bun-plugin-solid-oxc';
+ * import solidPlugin from '@wq2/bun-plugin-solid-oxc';
  *
  * await Bun.build({
  *   entrypoints: ['./src/index.tsx'],
@@ -17,7 +17,7 @@
  * Usage with bunfig.toml (runtime):
  * ```toml
  * [bunfig]
- * preload = ["bun-plugin-solid-oxc/register"]
+ * preload = ["@wq2/bun-plugin-solid-oxc/register"]
  * ```
  */
 

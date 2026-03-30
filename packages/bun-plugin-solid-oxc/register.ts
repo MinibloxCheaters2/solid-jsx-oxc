@@ -3,12 +3,12 @@
  *
  * Usage in bunfig.toml:
  * ```toml
- * preload = ["bun-plugin-solid-oxc/register"]
+ * preload = ["@wq2/bun-plugin-solid-oxc/register"]
  * ```
  *
  * Or via CLI:
  * ```bash
- * bun --preload bun-plugin-solid-oxc/register ./src/index.tsx
+ * bun --preload @wq2/bun-plugin-solid-oxc/register ./src/index.tsx
  * ```
  */
 
