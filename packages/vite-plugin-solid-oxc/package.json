@@ -1,11 +1,15 @@
 {
   "name": "@wq2/vite-plugin-solid-oxc",
   "version": "0.1.0-alpha.15",
-  "description": "Vite plugin for SolidJS using OXC-based compiler (now working on everything except M*cOS)",
+  "description": "Vite plugin for SolidJS using OXC-based compiler",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
