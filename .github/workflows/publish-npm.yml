@@ -131,7 +131,7 @@ jobs:
       - name: Build npm packages
         run: |
           cd packages/solid-jsx-oxc
-          npm run build || bun run build
+          bun run build
 
       - name: Verify binaries
         run: |
