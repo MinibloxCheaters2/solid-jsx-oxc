@@ -55,7 +55,7 @@ jobs:
       # For cross-compilation on Linux
       - name: Install Zig (Linux cross-compile)
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
-        uses: mlugg/setup-zig@v1
+        uses: mlugg/setup-zig@v2
 
       - name: Install cargo-zigbuild
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
