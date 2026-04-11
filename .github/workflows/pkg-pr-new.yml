@@ -38,25 +38,29 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.settings.target }}
-      - uses: mlugg/setup-zig@v2
-        with:
-          version: 0.13.0
+      - uses: mlugg/setup-zig@main
+
       - uses: taiki-e/install-action@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           tool: cargo-zigbuild,cargo-xwin
-      - uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
+
       - uses: oven-sh/setup-bun@v2
+
       - name: Install deps
         run: bun install --ignore-scripts
+
       - name: Build native addon
         working-directory: packages/solid-jsx-oxc
         run: |
           bunx @napi-rs/cli build --platform --release --features napi --no-js --dts binding.d.ts \
             --target ${{ matrix.settings.target }} ${{ matrix.settings.flags }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -69,15 +73,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
       - name: Install deps
         run: bun install --ignore-scripts
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: packages/solid-jsx-oxc
           pattern: bindings-*
