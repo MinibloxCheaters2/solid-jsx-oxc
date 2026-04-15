@@ -99,6 +99,10 @@ jobs:
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
+      
+      - name: Debug outputs
+        run: |
+          ls -lah packages/solid-jsx-oxc
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
