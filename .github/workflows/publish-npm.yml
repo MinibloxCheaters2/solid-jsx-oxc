@@ -63,13 +63,13 @@ jobs:
       - name: Build (Zig cross-compile)
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
         run: |
-            napi build \
-              --platform \
-              --release \
-              --target ${{matrix.target}} \
-              --features napi \
-              --no-js \
-              --dts binding.d.ts
+          bunx napi build \
+            --platform \
+            --release \
+            --target ${{matrix.target}} \
+            --features napi \
+            --no-js \
+            --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -79,6 +79,7 @@ jobs:
           AR: "zig ar"
 
           CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: "zig cc"
+          CARGO_TARGET_AARCH64_PC_WINDOWS_GNU_LINKER: "zig cc"
           CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: "zig cc"
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "zig cc"
 
@@ -86,7 +87,7 @@ jobs:
 
       - name: Build (native)
         if: ${{ !matrix.use-cross }}
-        run: napi build --platform --release --features napi --no-js --dts binding.d.ts
+        run: bunx napi build --platform --release --features napi --no-js --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
