@@ -51,7 +51,7 @@ jobs:
       # For cross-compilation on Linux
       - name: Install Zig (Linux cross-compile)
         id: zig
-        if: ${{ equals(matrix.use-cross, 'zig') && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
         uses: mlugg/setup-zig@v2
 
       - name: Install dependencies
@@ -59,7 +59,7 @@ jobs:
         run: bun install
 
       - name: Create zig cc wrapper
-        if: ${{ equals(matrix.use-cross, 'zig') && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
         run: |
           cat << 'EOF' > zig-cc
           #!/usr/bin/env bash
@@ -68,7 +68,7 @@ jobs:
           chmod +x zig-cc
 
       - name: Build (MSVC cross-compile)
-        if: ${{ equals(matrix.use-cross, 'msvc') && runner.os == 'Windows' }}
+        if: ${{ matrix.use-cross == 'msvc' && runner.os == 'Windows' }}
         run: |
           bunx napi build \
             --release \
@@ -82,7 +82,7 @@ jobs:
           PKG_CONFIG_ALLOW_CROSS: "1"
 
       - name: Build (Zig cross-compile)
-        if: ${{ equals(matrix.use-cross, 'zig') && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
         run: |
           bunx napi build \
             --release \
