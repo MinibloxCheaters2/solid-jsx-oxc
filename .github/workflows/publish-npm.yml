@@ -138,27 +138,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v8
         with:
-          path: artifacts
-
-      - name: Organize binaries
-        run: |
-          mkdir -p packages/solid-jsx-oxc/artifacts
-
-          # Map artifact directories to targets
-          for target_file in artifacts/natives-*; do
-            target="${target_file#artifacts/natives-}"
-            target="${target%/}"
-            echo "Processing binaries for $target"
-            mv "$target_file" packages/solid-jsx-oxc/ 2>/dev/null || true
-          done
-
-      - name: List organized binaries
-        run: find packages/solid-jsx-oxc/artifacts -type f | head -20
-
-      - name: Build npm packages
-        run: |
-          cd packages/solid-jsx-oxc
-          bun run build
+          path: packages/solid-jsx-oxc/
 
       - name: List native modules
         run: find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
