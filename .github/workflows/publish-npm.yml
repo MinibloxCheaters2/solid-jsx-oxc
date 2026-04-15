@@ -17,19 +17,24 @@ jobs:
           # Linux targets
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+            platform: linux
+            arch: x86_64
             use-cross: false
+ 
           - os: ubuntu-latest
             target: aarch64-unknown-linux-gnu
-            native-name: linux-arm64-gnu
+            platform: linux
+            arch: arm64
             use-cross: "zig"
 
           # Windows targets
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            native-name: win32-x64-msvc
             use-cross: false
           - os: windows-latest
             target: aarch64-pc-windows-msvc
+            platform: windows
+            arch: arm64
             use-cross: "msvc"
 
     steps:
@@ -70,7 +75,7 @@ jobs:
       - name: Build (MSVC cross-compile)
         if: ${{ matrix.use-cross == 'msvc' && runner.os == 'Windows' }}
         run: |
-          bunx napi build --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
+          bunx napi build --platform ${{matrix.platform}} --arch ${{matrix.arch}} --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -79,7 +84,7 @@ jobs:
       - name: Build (Zig cross-compile)
         if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
         run: |
-          bunx napi build --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
+          bunx napi build --platform ${{matrix.platform}} --arch ${{matrix.arch}} --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -146,11 +151,11 @@ jobs:
           mkdir -p packages/solid-jsx-oxc/artifacts
 
           # Map artifact directories to targets
-          for target_dir in artifacts/natives-*/; do
-            target="${target_dir%/}"
-            target="${target##*-}"
+          for target_file in artifacts/natives-*; do
+            target="${target_file#artifacts/natives-}"
+            target="${target%/}"
             echo "Processing binaries for $target"
-            cp -r "$target_dir"* "packages/solid-jsx-oxc/artifacts/$target/" 2>/dev/null || true
+            mv "$target_file" packages/solid-jsx-oxc/ 2>/dev/null || true
           done
 
       - name: List organized binaries
