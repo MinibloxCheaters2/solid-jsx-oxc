@@ -70,12 +70,7 @@ jobs:
       - name: Build (MSVC cross-compile)
         if: ${{ matrix.use-cross == 'msvc' && runner.os == 'Windows' }}
         run: |
-          bunx napi build \
-            --release \
-            --target ${{matrix.target}} \
-            --features napi \
-            --no-js \
-            --dts binding.d.ts
+          bunx napi build --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
