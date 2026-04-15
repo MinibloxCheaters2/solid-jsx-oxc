@@ -18,7 +18,7 @@ jobs:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             native-name: linux-x64-gnu
-            use-cross: true
+            use-cross: false
           - os: ubuntu-latest
             target: aarch64-unknown-linux-gnu
             native-name: linux-arm64-gnu
