@@ -59,7 +59,9 @@ jobs:
 
       - name: Add Zig to PATH
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
-        run: echo "${{ steps.zig.outputs.zig-path }}" >> $GITHUB_PATH
+        run: |
+          echo "${{ steps.zig.outputs }}"
+          exit 1 #debugging
 
       - name: Install dependencies
         working-directory: packages/solid-jsx-oxc
