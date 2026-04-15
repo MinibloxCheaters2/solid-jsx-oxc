@@ -79,7 +79,8 @@ jobs:
           CXX: "zig c++"
           AR: "zig ar"
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "zig"
-          RUSTFLAGS: "-C link-arg=-target -C link-arg=aarch64-linux-gnu"
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: "zig"
+          RUSTFLAGS: "-C link-arg=-target -C link-arg=${{matrix.target}}"
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
