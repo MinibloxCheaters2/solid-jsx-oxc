@@ -53,8 +53,13 @@ jobs:
 
       # For cross-compilation on Linux
       - name: Install Zig (Linux cross-compile)
+        id: zig
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
         uses: mlugg/setup-zig@v2
+
+      - name: Add Zig to PATH
+        if: ${{ matrix.use-cross && runner.os == 'Linux' }}
+        run: echo "${{ steps.zig.outputs.zig-path }}" >> $GITHUB_PATH
 
       - name: Install dependencies
         working-directory: packages/solid-jsx-oxc
