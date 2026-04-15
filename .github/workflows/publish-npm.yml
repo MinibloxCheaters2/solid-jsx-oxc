@@ -23,16 +23,15 @@ jobs:
             target: aarch64-unknown-linux-gnu
             native-name: linux-arm64-gnu
             use-cross: true
-          # 'win32-x64': 'win32-x64-msvc',
-          # 'win32-arm64': 'win32-arm64-msvc',
 
           # Windows targets
           - os: windows-latest
-            target: x86_64-pc-windows-gnu
-            native-name: win32-x64
+            target: x86_64-pc-windows-msvc
+            native-name: win32-x64-msvc
             use-cross: false
           - os: windows-latest
             target: aarch64-pc-windows-msvc
+            native-name: win32-arm64-msvc
             use-cross: false
 
     steps:
