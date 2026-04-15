@@ -21,20 +21,14 @@ jobs:
           - os: ubuntu-latest
             target: aarch64-unknown-linux-gnu
             use-cross: true
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-            use-cross: true
-          - os: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            use-cross: true
 
           # Windows targets
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            use-cross: false
-          - os: windows-latest
-            target: aarch64-pc-windows-msvc
-            use-cross: false
+          - os: ubuntu-latest
+            target: x86_64-pc-windows-gnu
+            use-cross: true
+          - os: ubuntu-latest
+            target: aarch64-pc-windows-gnu
+            use-cross: true
 
     steps:
       - uses: actions/checkout@v6
@@ -62,6 +56,7 @@ jobs:
         run: cargo install cargo-zigbuild
 
       - name: Install dependencies
+        working-directory: packages/solid-jsx-oxc
         run: bun install
 
       - name: Build (Zig cross-compile)
@@ -73,7 +68,7 @@ jobs:
 
       - name: Build (native)
         if: ${{ !matrix.use-cross }}
-        run: cargo build --release --target ${{ matrix.target }}
+        run: napi build --platform --release --features napi --no-js --dts binding.d.ts
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -81,8 +76,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: binaries-${{ matrix.target }}
-          path: packages/solid-jsx-oxc/target/${{ matrix.target }}/release/*solid_jsx_oxc*
+          name: natives-${{ matrix.target }}
+          path: packages/solid-jsx-oxc/solid-jsx-oxc.*.node
+          archive: false
           if-no-files-found: error
 
   publish:
@@ -116,9 +112,9 @@ jobs:
       - name: Organize binaries
         run: |
           mkdir -p packages/solid-jsx-oxc/artifacts
-          
+
           # Map artifact directories to targets
-          for target_dir in artifacts/binaries-*/; do
+          for target_dir in artifacts/natives-*/; do
             target="${target_dir%/}"
             target="${target##*-}"
             echo "Processing binaries for $target"
@@ -133,10 +129,8 @@ jobs:
           cd packages/solid-jsx-oxc
           bun run build
 
-      - name: Verify binaries
-        run: |
-          echo "Verifying native modules..."
-          find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
+      - name: List native modules
+        run: find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
 
       - name: Publish (NPM)
         run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info
