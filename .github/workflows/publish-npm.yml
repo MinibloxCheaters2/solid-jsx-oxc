@@ -139,6 +139,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: packages/solid-jsx-oxc/
+          merge-multiple: true
+
+      - name: Flatten artifacts
+        run: |
+          find packages/solid-jsx-oxc -type f -name "*.node" -exec mv {} packages/solid-jsx-oxc/ \;
+          find packages/solid-jsx-oxc -type d -empty -delete
 
       - name: List native modules
         run: find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
