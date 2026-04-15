@@ -170,7 +170,7 @@ jobs:
         run: find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
 
       - name: Publish (NPM)
-        run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info
+        run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info --dry-run
         working-directory: packages/solid-jsx-oxc
         env:
           NPM_TOKEN: ${{ env.NPM_TOKEN }}
