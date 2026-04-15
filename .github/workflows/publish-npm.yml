@@ -61,6 +61,15 @@ jobs:
         working-directory: packages/solid-jsx-oxc
         run: bun install
 
+      - name: Create zig cc wrapper
+        if: ${{matrix.use-cross && runner.os == 'Linux'}}
+        run: |
+          cat << 'EOF' > zig-cc
+          #!/usr/bin/env bash
+          exec zig cc "$@"
+          EOF
+          chmod +x zig-cc
+
       - name: Build (Zig cross-compile)
         if: ${{ matrix.use-cross && runner.os == 'Linux' }}
         run: |
@@ -78,8 +87,9 @@ jobs:
           CC: "zig cc"
           CXX: "zig c++"
           AR: "zig ar"
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "zig"
-          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: "zig"
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
+          CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER: "${{ github.workspace }}/zig-cc"
           RUSTFLAGS: "-C link-arg=-target -C link-arg=${{matrix.target}}"
 
           PKG_CONFIG_ALLOW_CROSS: "1"
