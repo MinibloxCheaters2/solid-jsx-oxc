@@ -157,7 +157,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: natives
+          name: natives-${{ matrix.platform }}
           path: packages/solid-jsx-oxc/*.node
           if-no-files-found: error
 
@@ -198,6 +198,3 @@ jobs:
       - name: Publish (NPM)
         run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info
         working-directory: packages/solid-jsx-oxc
-        env:
-          NPM_TOKEN: ${{ env.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
