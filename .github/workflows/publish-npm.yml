@@ -109,29 +109,39 @@ jobs:
       - name: Build (Zig cross-compile)
         if: ${{ matrix.use-cross == 'zig' }}
         run: |
-              for target in ${{ join(matrix.targets, ' ') }}; do
-                bunx napi build \
-                  --platform \
-                  --release \
-                  --target "$target" \
-                  --features napi \
-                  --no-js \
-                  --dts binding.d.ts &
-              done
-          
-              wait
+          pids=()
+          for target in ${{ join(matrix.targets, ' ') }}; do
+            echo "Starting build for $target"
+            bunx napi build \
+              --platform \
+              --release \
+              --target "$target" \
+              --features napi \
+              --no-js \
+              --dts binding.d.ts &
+            pids+=($!)
+          done
+          failed=0
+          for pid in "${pids[@]}"; do
+            if ! wait "$pid"; then
+              echo "Build process $pid failed"
+              failed=1
+            fi
+          done      
+          if [ "$failed" -ne 0 ]; then
+            exit 1
+          fi
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
-
+        
           CC: "zig cc"
           CXX: "zig c++"
           AR: "zig ar"
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
-          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-target -C link-arg=aarch64-linux-gnu"
-          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-target -C link-arg=x86_64-linux-gnu"
 
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
+          CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-target -C link-arg=x86_64-linux-gnu"
+        
           PKG_CONFIG_ALLOW_CROSS: "1"
 
       - name: Build (native)
