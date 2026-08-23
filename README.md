@@ -1,16 +1,6 @@
 # solid-jsx-oxc
 
-> [!IMPORTANT]
-> M\*cOS users are garbage, change my mind.
-> Whoever made this without doing cross compilation so more than M\*cOS was supported should be publicly executed.
-
 A high-performance JSX compiler for SolidJS built with [OXC](https://oxc.rs/) and Rust.
-
-## Features
-
-- [x] Works on every useful platform (macOS doesn't count but ProgSKID-CC got it working partially, so I added support)
-- [x] Everything else from upstream
-- [x] upstream devs wrote this with ChatGPT (expect bugs if true)
 
 ## Supported Features
 

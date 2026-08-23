@@ -1,6 +1,6 @@
 {
-  "name": "@wq2/rolldown-plugin-solid-oxc",
-  "version": "0.1.2",
+  "name": "rolldown-plugin-solid-oxc",
+  "version": "0.1.0-alpha.15",
   "description": "Rolldown plugin for SolidJS using OXC-based compiler",
   "type": "module",
   "main": "dist/index.js",
@@ -38,7 +38,7 @@
   "license": "MIT",
   "peerDependencies": {
     "rolldown": ">=1",
-    "@wq2/solid-jsx-oxc": "*"
+    "solid-jsx-oxc": "*"
   },
   "peerDependenciesMeta": {
     "rolldown": {
@@ -46,7 +46,7 @@
     }
   },
   "devDependencies": {
-    "@wq2/solid-jsx-oxc": "*",
+    "solid-jsx-oxc": "*",
     "@types/node": "^20.0.0",
     "tsdown": "^0.21.7"
   }
