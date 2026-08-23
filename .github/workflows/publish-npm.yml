@@ -152,21 +152,22 @@ jobs:
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
-      - name: Debug macOS linker being goobener
+      - name: Inspect Cargo config
         if: matrix.platform == 'Mac'
         run: |
-          env | sort | grep -Ei 'rust|cargo|clang|llvm|linker' || true
-          echo "-----"
-          cargo config get || true
-          echo "-----"
-          rustc -vV
-          echo "-----"
-          clang --version
-          echo "-----"
-          which ld
-          which lld || true
-          which ld.lld || true
-          which rust-lld || true
+          echo "project"
+          find . -path '*/.cargo/config' -o -path '*/.cargo/config.toml' -print
+
+          echo "home"
+          ls -la ~/.cargo/config ~/.cargo/config.toml 2>/dev/null || true
+
+          echo "contents"
+          cat ~/.cargo/config 2>/dev/null || true
+          cat ~/.cargo/config.toml 2>/dev/null || true
+
+          echo "lld refs"
+          grep -R "fuse-ld\|lld" ~/.cargo . --exclude-dir=node_modules --exclude-dir=target 2>/dev/null || true
+
 
       - name: Build (macOS, both archs)
         if: matrix.platform == 'Mac'
