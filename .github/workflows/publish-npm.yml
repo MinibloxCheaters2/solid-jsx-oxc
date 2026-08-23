@@ -152,14 +152,25 @@ jobs:
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
+      - name: Debug macOS linker being goobener
+        if: matrix.platform == 'Mac'
+        run: |
+          env | sort | grep -Ei 'rust|cargo|clang|llvm|linker' || true
+          echo "-----"
+          cargo config get || true
+          echo "-----"
+          rustc -vV
+          echo "-----"
+          clang --version
+          echo "-----"
+          which ld
+          which lld || true
+          which ld.lld || true
+          which rust-lld || true
+
       - name: Build (macOS, both archs)
         if: matrix.platform == 'Mac'
         run: |
-          # why not working AAAJSDAISDJIOAS
-          unset RUSTFLAGS
-          unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER
-          unset CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER
-
           bunx napi build \
             --platform \
             --release \
