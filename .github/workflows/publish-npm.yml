@@ -8,21 +8,21 @@ on:
 
 jobs:
   build-native:
-    name: Build ${{ matrix.target }}
+    name: Build ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          # Linux targets
           - os: ubuntu-26.04-arm
+            platform: Linux
             targets:
               - x86_64-unknown-linux-gnu
               - aarch64-unknown-linux-gnu
             use-cross: "zig"
  
-          # Windows targets
-          - os: windows-latest-arm
+          - os: windows-11-arm
+            platform: Fake OS (Widows)
             targets:
               - x86_64-pc-windows-msvc
               - aarch64-pc-windows-msvc
@@ -42,7 +42,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.targets }}
+          targets: ${{ join(matrix.targets, ' ') }}
 
       # For cross-compilation on Linux
       - name: Install Zig (Linux cross-compile)
@@ -66,29 +66,41 @@ jobs:
       - name: Build (MSVC cross-compile)
         if: ${{ matrix.use-cross == 'msvc' && runner.os == 'Windows' }}
         run: |
-          $processes = foreach ($target in "${{ matrix.targets }}".Split(" ")) {
-              Start-Process `
-                -FilePath "bunx" `
-                -ArgumentList @(
-                    "napi", "build",
-                    "--platform",
-                    "--release",
-                    "--target", $target,
-                    "--features", "napi",
-                    "--no-js",
-                    "--dts", "binding.d.ts"
-                ) `
-                -NoNewWindow `
-                -PassThru
-          }
+              $targets = "${{ join(matrix.targets, ' ') }}".Split(" ")
+              $processes = @()
           
-          $processes | ForEach-Object {
-              $_.WaitForExit()
+              foreach ($target in $targets) {
+                  Write-Host "Starting build for $target"
           
-              if ($_.ExitCode -ne 0) {
-                  throw "Build failed with exit code $($_.ExitCode)"
+                  $processes += Start-Process `
+                    -FilePath "bunx" `
+                    -ArgumentList @(
+                        "napi", "build",
+                        "--platform",
+                        "--release",
+                        "--target", $target,
+                        "--features", "napi",
+                        "--no-js",
+                        "--dts", "binding.d.ts"
+                    ) `
+                    -NoNewWindow `
+                    -PassThru
               }
-          }
+          
+              $failed = $false
+          
+              foreach ($process in $processes) {
+                  $process.WaitForExit()
+          
+                  if ($process.ExitCode -ne 0) {
+                      Write-Error "Build exited with code $($process.ExitCode) son"
+                      $failed = $true
+                  }
+              }
+          
+              if ($failed) {
+                  throw "@dev fix CI now"
+              }
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -97,7 +109,7 @@ jobs:
       - name: Build (Zig cross-compile)
         if: ${{ matrix.use-cross == 'zig' }}
         run: |
-              for target in ${{ matrix.targets }}; do
+              for target in ${{ join(matrix.targets, ' ') }}; do
                 bunx napi build \
                   --platform \
                   --release \
@@ -106,6 +118,7 @@ jobs:
                   --no-js \
                   --dts binding.d.ts &
               done
+          
               wait
         working-directory: packages/solid-jsx-oxc
         env:
@@ -131,9 +144,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: natives-${{ matrix.target }}
+          name: natives
           path: packages/solid-jsx-oxc/*.node
-          archive: false
           if-no-files-found: error
 
   publish:
