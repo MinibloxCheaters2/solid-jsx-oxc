@@ -152,23 +152,6 @@ jobs:
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
-      - name: Inspect Cargo config
-        if: matrix.platform == 'Mac'
-        run: |
-          echo "project"
-          find . -path '*/.cargo/config' -o -path '*/.cargo/config.toml' -print
-
-          echo "home"
-          ls -la ~/.cargo/config ~/.cargo/config.toml 2>/dev/null || true
-
-          echo "contents"
-          cat ~/.cargo/config 2>/dev/null || true
-          cat ~/.cargo/config.toml 2>/dev/null || true
-
-          echo "lld refs"
-          grep -R "fuse-ld\|lld" ~/.cargo . --exclude-dir=node_modules --exclude-dir=target 2>/dev/null || true
-
-
       - name: Build (macOS, both archs)
         if: matrix.platform == 'Mac'
         run: |
@@ -191,6 +174,11 @@ jobs:
           wait
 
           bunx napi universalize
+
+          # we universalized, we don't need ts.
+          rm -f \
+            solid-jsx-oxc.darwin-arm64.node \
+            solid-jsx-oxc.darwin-x64.node
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
