@@ -8,7 +8,7 @@ A high-performance JSX compiler for SolidJS built with [OXC](https://oxc.rs/) an
 
 ## Features
 
-- [x] Works on everything but M*cOS (die)
+- [x] Works on every useful platform (macOS doesn't count but ProgSKID-CC got it working partially, so I added support)
 - [x] Everything else from upstream
 - [x] upstream devs wrote this with ChatGPT (expect bugs if true)
 
