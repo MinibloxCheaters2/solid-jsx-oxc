@@ -153,13 +153,35 @@ jobs:
           PKG_CONFIG_ALLOW_CROSS: "1"
 
       - name: Build (macOS, both archs)
-        if: matrix.platform == 'mac'
+        if: matrix.platform == 'Mac'
         run: |
-          bunx napi build --platform --release --target x86_64-apple-darwin --features napi --no-js --dts binding.d.ts &
-          bunx napi build --platform --release --target aarch64-apple-darwin --features napi --no-js --dts binding.d.ts &
+          # why not working AAAJSDAISDJIOAS
+          unset RUSTFLAGS
+          unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER
+          unset CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER
+
+          bunx napi build \
+            --platform \
+            --release \
+            --target x86_64-apple-darwin \
+            --features napi \
+            --no-js \
+            --dts binding.d.ts &
+
+          bunx napi build \
+            --platform \
+            --release \
+            --target aarch64-apple-darwin \
+            --features napi \
+            --no-js \
+            --dts binding.d.ts &
+
           wait
+
           bunx napi universalize
         working-directory: packages/solid-jsx-oxc
+        env:
+          NAPI_RS_TARGETING_NODEJS: true
 
       - name: Build (native)
         if: ${{ !matrix.use-cross }}
