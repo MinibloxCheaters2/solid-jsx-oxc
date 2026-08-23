@@ -155,7 +155,10 @@ jobs:
       - name: Build (macOS, both archs)
         if: matrix.platform == 'mac'
         run: |
-          bunx napi build --platform --release --target universal-apple-darwin --features napi --no-js --dts binding.d.ts
+          bunx napi build --platform --release --target x86_64-apple-darwin --features napi --no-js --dts binding.d.ts &
+          bunx napi build --platform --release --target aarch64-apple-darwin --features napi --no-js --dts binding.d.ts &
+          wait
+          bunx napi universalize
         working-directory: packages/solid-jsx-oxc
 
       - name: Build (native)
