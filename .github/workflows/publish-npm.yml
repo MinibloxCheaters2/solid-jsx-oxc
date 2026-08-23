@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-native:
-    name: Build ${{ matrix.platform }}
+    name: Build for ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -22,11 +22,13 @@ jobs:
             use-cross: "zig"
  
           - os: windows-11-arm
-            platform: Fake OS (Widows)
+            platform: Windows
             targets:
               - x86_64-pc-windows-msvc
               - aarch64-pc-windows-msvc
             use-cross: "msvc"
+
+          # I'll bother to add intel & apple sillicon mac support after ts
 
     steps:
       - uses: actions/checkout@v6
@@ -142,7 +144,6 @@ jobs:
           CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER: "${{ github.workspace }}/zig-cc"
           CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-target -C link-arg=x86_64-linux-gnu"
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: "cc"
-          # CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-C link-arg=-Wl,--no-fix-cortex-a53-843419"
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
