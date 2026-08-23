@@ -28,7 +28,12 @@ jobs:
               - aarch64-pc-windows-msvc
             use-cross: "msvc"
 
-          # I'll bother to add intel & apple sillicon mac support after ts
+          - os: macos-latest
+            platform: Mac
+            targets:
+              - x86_64-apple-darwin
+              - aarch64-apple-darwin
+            use-cross: true
 
     steps:
       - uses: actions/checkout@v6
@@ -147,6 +152,12 @@ jobs:
 
           PKG_CONFIG_ALLOW_CROSS: "1"
 
+      - name: Build (macOS, both archs)
+        if: matrix.platform == 'macOS'
+        run: |
+          bunx napi build --platform --release --target universal-apple-darwin --features napi --no-js --dts binding.d.ts
+        working-directory: packages/solid-jsx-oxc
+
       - name: Build (native)
         if: ${{ !matrix.use-cross }}
         run: bunx napi build --platform --release --features napi --no-js --dts binding.d.ts
@@ -189,11 +200,6 @@ jobs:
         with:
           path: packages/solid-jsx-oxc/
           merge-multiple: true
-
-      - name: Flatten artifacts
-        run: |
-          find packages/solid-jsx-oxc -type f -name "*.node" -exec mv {} packages/solid-jsx-oxc/ \;
-          find packages/solid-jsx-oxc -type d -empty -delete
 
       - name: Publish (NPM)
         run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info
