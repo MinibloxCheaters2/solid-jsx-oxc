@@ -15,20 +15,17 @@ jobs:
       matrix:
         include:
           # Linux targets
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            use-cross: false
- 
-          - os: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
+          - os: ubuntu-26.04-arm
+            target:
+              - x86_64-unknown-linux-gnu
+              - aarch64-unknown-linux-gnu
             use-cross: "zig"
-
+ 
           # Windows targets
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            use-cross: false
-          - os: windows-latest
-            target: aarch64-pc-windows-msvc
+          - os: windows-latest-arm
+            targets:
+              - x86_64-pc-windows-msvc
+              - aarch64-pc-windows-msvc
             use-cross: "msvc"
 
     steps:
@@ -50,7 +47,7 @@ jobs:
       # For cross-compilation on Linux
       - name: Install Zig (Linux cross-compile)
         id: zig
-        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' }}
         uses: mlugg/setup-zig@v2
 
       - name: Install dependencies
@@ -58,7 +55,7 @@ jobs:
         run: bun install
 
       - name: Create zig cc wrapper
-        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' }}
         run: |
           cat << 'EOF' > zig-cc
           #!/usr/bin/env bash
@@ -69,16 +66,47 @@ jobs:
       - name: Build (MSVC cross-compile)
         if: ${{ matrix.use-cross == 'msvc' && runner.os == 'Windows' }}
         run: |
-          bunx napi build --platform --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
+          $processes = foreach ($target in "${{ matrix.targets }}".Split(" ")) {
+              Start-Process `
+                -FilePath "bunx" `
+                -ArgumentList @(
+                    "napi", "build",
+                    "--platform",
+                    "--release",
+                    "--target", $target,
+                    "--features", "napi",
+                    "--no-js",
+                    "--dts", "binding.d.ts"
+                ) `
+                -NoNewWindow `
+                -PassThru
+          }
+          
+          $processes | ForEach-Object {
+              $_.WaitForExit()
+          
+              if ($_.ExitCode -ne 0) {
+                  throw "Build failed with exit code $($_.ExitCode)"
+              }
+          }
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
           PKG_CONFIG_ALLOW_CROSS: "1"
 
       - name: Build (Zig cross-compile)
-        if: ${{ matrix.use-cross == 'zig' && runner.os == 'Linux' }}
+        if: ${{ matrix.use-cross == 'zig' }}
         run: |
-          bunx napi build --platform --release --target ${{matrix.target}} --features napi --no-js --dts binding.d.ts
+              for target in ${{ matrix.targets }}; do
+                bunx napi build \
+                  --platform \
+                  --release \
+                  --target "$target" \
+                  --features napi \
+                  --no-js \
+                  --dts binding.d.ts &
+              done
+              wait
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
@@ -99,10 +127,6 @@ jobs:
         working-directory: packages/solid-jsx-oxc
         env:
           NAPI_RS_TARGETING_NODEJS: true
-      
-      - name: Debug outputs
-        run: |
-          ls packages/solid-jsx-oxc
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
@@ -145,9 +169,6 @@ jobs:
         run: |
           find packages/solid-jsx-oxc -type f -name "*.node" -exec mv {} packages/solid-jsx-oxc/ \;
           find packages/solid-jsx-oxc -type d -empty -delete
-
-      - name: List native modules
-        run: find packages/solid-jsx-oxc -name "*.node" -o -name "*.dll" -o -name "*.dylib" | head -20
 
       - name: Publish (NPM)
         run: bunx npm publish --registry=https://registry.npmjs.org/ --loglevel info
