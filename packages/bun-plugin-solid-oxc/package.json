@@ -21,6 +21,8 @@
   },
   "files": [
     "src",
+    "ReadME.md",
+    "LICENSE",
     "register.ts"
   ],
   "scripts": {

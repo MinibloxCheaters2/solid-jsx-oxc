@@ -20,7 +20,9 @@
     "index.js",
     "index.d.ts",
     "binding.d.ts",
-    "*.node"
+    "*.node",
+    "ReadME.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
