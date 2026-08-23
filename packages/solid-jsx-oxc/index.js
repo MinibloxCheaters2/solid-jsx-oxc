@@ -4,18 +4,12 @@
  * ESM entry point - provides the same interface as babel-preset-solid.
  */
 
-import { createRequire } from 'node:module';
 import { platform, arch } from 'node:process';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const require = createRequire(import.meta.url);
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Map Node.js platform/arch to binary file suffix
 const platformMap = {
-  'darwin-arm64': 'darwin-arm64',
-  'darwin-x64': 'darwin-x64',
+  'darwin-arm64': 'darwin-universal',
+  'darwin-x64': 'darwin-universal',
   'linux-x64': 'linux-x64-gnu',
   'linux-arm64': 'linux-arm64-gnu',
   'win32-x64': 'win32-x64-msvc',
@@ -28,19 +22,23 @@ const nativeTarget = platformMap[platformKey];
 // Try to load the native module
 let nativeBinding = null;
 
-try {
-  if (nativeTarget) {
-    // Try platform-specific binary first
-    nativeBinding = require(join(__dirname, `solid-jsx-oxc.${nativeTarget}.node`));
-  } else {
-    // Fallback to generic name
-    nativeBinding = require(join(__dirname, 'solid-jsx-oxc.node'));
+async function loadBinding() {
+  try {
+    if (nativeTarget) {
+      // Try platform-specific binary first
+      nativeBinding = await import(import.meta.resolve(`solid-jsx-oxc.${nativeTarget}.node`));
+    } else {
+      // Fallback to generic name
+      nativeBinding = await import(import.meta.resolve(`solid-jsx-oxc.${nativeTarget}.node`));
+    }
+  } catch (e) {
+    // Fallback message if native module not found
+    console.warn(`solid-jsx-oxc: Native module not found for ${platformKey}. Run \`npm run build\` to compile.`);
+    console.warn(e instanceof Error ? e.message : String(e));
   }
-} catch (e) {
-  // Fallback message if native module not found
-  console.warn(`solid-jsx-oxc: Native module not found for ${platformKey}. Run \`npm run build\` to compile.`);
-  console.warn(e instanceof Error ? e.message : String(e));
 }
+
+await loadBinding();
 
 /**
  * Default options matching babel-preset-solid
