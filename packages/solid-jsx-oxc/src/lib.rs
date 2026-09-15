@@ -91,6 +91,7 @@ pub fn transform_jsx(source: String, options: Option<JsTransformOptions>) -> Tra
     };
 
     let options = TransformOptions {
+        module_name: js_options.module_name.as_deref().unwrap_or("solid-js/web"),
         generate,
         hydratable: js_options.hydratable.unwrap_or(false),
         delegate_events: js_options.delegate_events.unwrap_or(true),
@@ -173,6 +174,22 @@ mod tests {
         let result = transform(source, None);
         // The transform should produce valid code
         assert!(!result.code.is_empty());
+    }
+
+    #[cfg(feature = "napi")]
+    #[test]
+    fn test_js_module_name_is_used_for_helper_imports() {
+        let source = r#"<div>{count()}</div>"#;
+        let result = transform_jsx(
+            source.to_string(),
+            Some(JsTransformOptions {
+                module_name: Some("@solidjs/web".to_string()),
+                ..JsTransformOptions::default()
+            }),
+        );
+
+        assert!(result.code.contains("from \"@solidjs/web\""));
+        assert!(!result.code.contains("from \"solid-js/web\""));
     }
 
     #[test]
