@@ -1,6 +1,6 @@
 {
   "name": "@wq2/bun-plugin-solid-oxc",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Bun plugin for SolidJS using OXC-based compiler",
   "type": "module",
   "main": "src/index.ts",
@@ -21,7 +21,7 @@
   },
   "files": [
     "src",
-    "ReadME.md",
+    "README.md",
     "LICENSE",
     "register.ts"
   ],

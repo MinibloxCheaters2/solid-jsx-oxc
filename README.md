@@ -1,9 +1,5 @@
 # solid-jsx-oxc
 
-> [!IMPORTANT]
-> M\*cOS users are garbage, change my mind.
-> Whoever made this without doing cross compilation so more than M\*cOS was supported should be publicly executed.
-
 A high-performance JSX compiler for SolidJS built with [OXC](https://oxc.rs/) and Rust.
 
 ## Features
