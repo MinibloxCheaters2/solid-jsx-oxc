@@ -26,10 +26,10 @@ async function loadBinding() {
   try {
     if (nativeTarget) {
       // Try platform-specific binary first
-      nativeBinding = await import(import.meta.resolve(`solid-jsx-oxc.${nativeTarget}.node`));
+      nativeBinding = await import(import.meta.resolve(`./solid-jsx-oxc.${nativeTarget}.node`));
     } else {
       // Fallback to generic name
-      nativeBinding = await import(import.meta.resolve(`solid-jsx-oxc.${nativeTarget}.node`));
+      nativeBinding = await import(import.meta.resolve('./solid-jsx-oxc.node'));
     }
   } catch (e) {
     // Fallback message if native module not found
