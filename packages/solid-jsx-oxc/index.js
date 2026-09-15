@@ -4,7 +4,8 @@
  * ESM entry point - provides the same interface as babel-preset-solid.
  */
 
-import { platform, arch } from 'node:process';
+import process, { platform, arch } from 'node:process';
+import { fileURLToPath } from 'node:url';
 
 // Map Node.js platform/arch to binary file suffix
 const platformMap = {
@@ -22,15 +23,15 @@ const nativeTarget = platformMap[platformKey];
 // Try to load the native module
 let nativeBinding = null;
 
-async function loadBinding() {
+function loadBinding() {
   try {
-    if (nativeTarget) {
-      // Try platform-specific binary first
-      nativeBinding = await import(import.meta.resolve(`./solid-jsx-oxc.${nativeTarget}.node`));
-    } else {
-      // Fallback to generic name
-      nativeBinding = await import(import.meta.resolve('./solid-jsx-oxc.node'));
-    }
+    const binaryName = nativeTarget
+      ? `solid-jsx-oxc.${nativeTarget}.node`
+      : 'solid-jsx-oxc.node';
+    const nativeModule = { exports: {} };
+
+    process.dlopen(nativeModule, fileURLToPath(new URL(`./${binaryName}`, import.meta.url)));
+    nativeBinding = nativeModule.exports;
   } catch (e) {
     // Fallback message if native module not found
     console.warn(`solid-jsx-oxc: Native module not found for ${platformKey}. Run \`npm run build\` to compile.`);
@@ -38,7 +39,7 @@ async function loadBinding() {
   }
 }
 
-await loadBinding();
+loadBinding();
 
 /**
  * Default options matching babel-preset-solid
