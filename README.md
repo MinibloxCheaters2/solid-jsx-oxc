@@ -1,5 +1,8 @@
 # solid-jsx-oxc
 
+> [!WARNING]
+> For SolidJS 2.0, use [@solidjs/compiler](https://www.npmjs.com/package/@solidjs/compiler) instead.
+
 A high-performance JSX compiler for SolidJS built with [OXC](https://oxc.rs/) and Rust.
 
 ## Features
